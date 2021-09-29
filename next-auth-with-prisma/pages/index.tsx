@@ -13,7 +13,7 @@ const Home: NextPage = () => {
       </Head>
       <Layout>
         <Container maxWidth="md">
-          <Typography variant="h2" component="h1" sx={{textAlign: 'center', mt: 5}}>Wellcome!</Typography>
+          <Typography variant="h2" component="h1" sx={{ textAlign: 'center', mt: 5 }}>Wellcome!</Typography>
         </Container>
       </Layout>
     </div>

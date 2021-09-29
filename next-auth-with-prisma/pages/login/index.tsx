@@ -3,6 +3,8 @@ import type { NextPage } from 'next'
 import { Container, Box, Typography, TextField, Button, Paper } from '@mui/material'
 import Link from 'next/link'
 import Head from 'next/head'
+import { signIn } from 'next-auth/client'
+import { useRouter } from 'next/router'
 
 interface Props {
 
@@ -11,10 +13,25 @@ interface Props {
 const Login: NextPage = (props: Props) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [success, setSuccess] = React.useState(false);
+  const router = useRouter();
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    const status = await signIn('credentials', {
+      redirect: false,
+      email: email,
+      password: password,
+    })
+    console.log(status)
+    setSuccess(true)
   }
+
+  React.useEffect(() => {
+    if (success) {
+      router.push('/profile')
+    }
+  }, [success])
 
   return (
     <Container maxWidth="sm">
@@ -31,7 +48,7 @@ const Login: NextPage = (props: Props) => {
             <TextField fullWidth label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </Box>
           <Box>
-            <Button size="large" variant="contained" color="primary">Sign in</Button>
+            <Button size="large" variant="contained" color="primary" type="submit">Sign in</Button>
           </Box>
           <Box sx={{ mt: 2 }}>
             <Link href="/register" passHref>

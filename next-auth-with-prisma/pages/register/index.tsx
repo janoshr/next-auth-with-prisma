@@ -3,6 +3,8 @@ import type { NextPage } from 'next'
 import { Container, Box, Typography, TextField, Button, Paper } from '@mui/material'
 import Link from 'next/link'
 import Head from 'next/head'
+import { useRouter } from 'next/dist/client/router'
+import { getSession, signIn } from 'next-auth/client'
 
 interface Props {
 
@@ -13,9 +15,57 @@ const Register: NextPage = (props: Props) => {
   const [password, setPassword] = React.useState("");
   const [confirmPw, setConfirmPw] = React.useState("");
   const [username, setUsername] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | boolean>(false);
+  const [success, setSucess] = React.useState(false);
+  const router = useRouter();
 
-  function handleSubmit(e:FormEvent) {
+  React.useEffect(() => {
+    if (success) {
+      signIn('credentials', {
+        redirect: false,
+        email: email,
+        password: password,
+      }).then((res) => {
+        console.log(res)
+        router.push('/profile')
+      })
+    }
+  }, [success])
+
+  React.useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        router.replace('/profile')
+      } else {
+        setLoading(false);
+      }
+    })
+  }, [])
+
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    setLoading(true);
+    if (!email) {
+      setError("Invalid email address");
+    } else if (!password || password !== confirmPw) {
+      setError("Passwords missmatch or empty");
+    }
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        username: username,
+      })
+    })
+    const data = await res.json()
+
+    console.log(data);
+    setSucess(true);
   }
 
   return (
@@ -27,19 +77,19 @@ const Register: NextPage = (props: Props) => {
         <Typography variant="h2" component="h1">Sign Up</Typography>
         <form onSubmit={handleSubmit}>
           <Box sx={{ my: 3 }}>
-            <TextField fullWidth label="Username" value={username} onChange={(e) => setUsername(e.target.value)} autoFocus />
+            <TextField fullWidth label="Username" value={username} onChange={(e) => setUsername(e.target.value)} autoFocus disabled={loading} />
           </Box>
           <Box sx={{ my: 3 }}>
-            <TextField fullWidth label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextField fullWidth label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} />
           </Box>
           <Box sx={{ my: 3 }}>
-            <TextField fullWidth label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <TextField fullWidth label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} />
           </Box>
           <Box sx={{ my: 3 }}>
-            <TextField fullWidth label="Confirm Password" type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} />
+            <TextField fullWidth label="Confirm Password" type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} disabled={loading} />
           </Box>
           <Box>
-            <Button size="large" variant="contained" color="primary">Register</Button>
+            <Button size="large" variant="contained" color="primary" type="submit" disabled={loading || confirmPw !== password}>Register</Button>
           </Box>
         </form>
         <Box sx={{ mt: 2 }}>
@@ -48,7 +98,7 @@ const Register: NextPage = (props: Props) => {
           </Link>
         </Box>
       </Paper>
-      <Box sx={{textAlign: "center", mt: 1}}>
+      <Box sx={{ textAlign: "center", mt: 1 }}>
         <Link href="/" passHref>
           <Button variant="text" color="primary">
             Back to home
