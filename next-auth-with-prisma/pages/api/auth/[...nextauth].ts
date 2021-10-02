@@ -20,15 +20,15 @@ export default NextAuth({
         });
 
         if (user) {
-          const checkPassword = await compare(credentials.password, user.hash)
-          if (!checkPassword){
-            throw new Error("Password doesn't match")
+          const checkPassword = await compare(credentials.password, user.hash);
+          if (!checkPassword) {
+            throw new Error("Password doesn't match");
           }
           // Any object returned will be saved in `user` property of the JWT
           return user;
         } else {
           // If you return null or false then the credentials will be rejected
-          throw new Error("No user found")
+          throw new Error("No user found");
           // You can also Reject this callback with an Error or with a URL:
           // throw new Error('error message') // Redirect to error page
           // throw '/path/to/redirect'        // Redirect to a URL

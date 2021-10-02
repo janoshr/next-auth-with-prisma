@@ -1,21 +1,37 @@
-import React, { ReactNode } from 'react'
-import { Container, AppBar, Button, Toolbar, Typography, Box } from '@mui/material'
-import Link from 'next/link'
-import { signOut, useSession } from 'next-auth/client'
+import React, { ReactNode } from "react";
+import {
+  Container,
+  AppBar,
+  Button,
+  Toolbar,
+  Typography,
+  Box,
+} from "@mui/material";
+import Link from "next/link";
+import { signOut, useSession } from "next-auth/client";
 
 interface Props {
-  children: ReactNode
+  children: ReactNode;
 }
 
 const Layout = (props: Props) => {
   const [session] = useSession();
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <AppBar color="default">
         <Toolbar>
           <Typography variant="h6" component="a" sx={{ flexGrow: 1 }}>
-            <Link href="/">Next-Auth with Prisma</Link>
+            <Link href="/" passHref>
+              <Typography
+                variant="h6"
+                component="a"
+                color="inherit"
+                sx={{ textDecoration: "none" }}
+              >
+                Next-Auth with Prisma
+              </Typography>
+            </Link>
           </Typography>
           {session ? (
             <>
@@ -27,7 +43,11 @@ const Layout = (props: Props) => {
                 </Link>
               </Box>
               <Box sx={{ mr: 1 }}>
-                <Button color="primary" variant="outlined" onClick={() => signOut()}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => signOut()}
+                >
                   Logout
                 </Button>
               </Box>
@@ -53,19 +73,17 @@ const Layout = (props: Props) => {
         </Toolbar>
       </AppBar>
       <Box sx={{ flexGrow: 1, mt: 8 }}>
-        <main>
-          {props.children}
-        </main>
+        <main>{props.children}</main>
       </Box>
-      <Box sx={{ width: '100%', bgcolor: '#f0f0f0' }}>
+      <Box sx={{ width: "100%", bgcolor: "#f0f0f0" }}>
         <Container maxWidth="lg">
-          <Typography sx={{ p: 2, fontWeight: 'bold', textAlign: 'center' }}>
+          <Typography sx={{ p: 2, fontWeight: "bold", textAlign: "center" }}>
             Created by János Hajdu Ráfis
           </Typography>
         </Container>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
