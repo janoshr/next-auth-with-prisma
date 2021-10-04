@@ -13,9 +13,7 @@ import Head from "next/head";
 import { signIn } from "next-auth/client";
 import { useRouter } from "next/router";
 
-interface Props {}
-
-const Login: NextPage = (props: Props) => {
+const Login: NextPage = () => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [success, setSuccess] = React.useState<boolean>(false);

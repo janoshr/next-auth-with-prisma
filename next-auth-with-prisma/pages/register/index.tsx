@@ -10,12 +10,10 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import Head from "next/head";
-import { useRouter } from "next/dist/client/router";
+import { useRouter } from "next/router";
 import { getSession, signIn } from "next-auth/client";
 
-interface Props {}
-
-const Register: NextPage = (props: Props) => {
+const Register: NextPage = () => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [confirmPw, setConfirmPw] = React.useState<string>("");
